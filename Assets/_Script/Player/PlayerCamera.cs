@@ -29,7 +29,6 @@ namespace TD
         private float cameraZPosition; //VALUES USE FOR CAMERA COLLISION 
         private float targetCameraZPosition;  //VALUES USE FOR CAMERA COLLISION 
 
-        public GameObject focusCanvas;
         public void Awake()
         {
             if (instance == null)

@@ -110,6 +110,12 @@ namespace TD
             if (!player.characterLocomotionManager.canMove)
                 return;
 
+            // If there is no movement input, don't move
+            if (moveAmount <= 0 && !player.characterLocomotionManager.isSliding)
+            {
+                return;
+            }
+
             //OUR MOVE DIRECTION IS BASED ON OUR CAMERA FACING DIRECTION & OUR MOVEMENT INPUT
             movementDirection = PlayerCamera.instance.transform.forward * verticalMovement;
             movementDirection = movementDirection + PlayerCamera.instance.transform.right * horizontalMovement;
