@@ -9,8 +9,6 @@ namespace TD
         [SerializeField] private bool holdToSprint = true;
 
         public bool SprintToggledOn { get; private set; }
-        public bool WalkToggledOn { get; private set; }
-        public bool JumpPressed { get; private set; }
         public PlayerInput playerInput { get; private set; }
         public Vector2 MovementInput { get; private set; }
         public Vector2 LookInput { get; private set; }
@@ -28,11 +26,6 @@ namespace TD
         {
             playerInput.PlayerMovement.Disable();
             playerInput.PlayerMovement.RemoveCallbacks(this);
-        }
-
-        private void LateUpdate()
-        {
-            JumpPressed = false;
         }
 
         public void OnMovement(InputAction.CallbackContext context)
@@ -56,26 +49,6 @@ namespace TD
             {
                 SprintToggledOn = !holdToSprint && SprintToggledOn;
             }
-        }
-
-        public void OnJump(InputAction.CallbackContext context)
-        {
-            if (!context.performed)
-            {
-                return;
-            }
-
-            JumpPressed = true;
-        }
-
-        public void OnWalking(InputAction.CallbackContext context)
-        {
-            if (!context.performed)
-            {
-                return;
-            }
-
-            WalkToggledOn = !WalkToggledOn;
         }
     }
 
