@@ -6,13 +6,17 @@ namespace TD
     [DefaultExecutionOrder(-2)]
     public class PlayerLocomotionInput : MonoBehaviour, PlayerInput.IPlayerMovementActions
     {
+        #region Class Variables
         [SerializeField] private bool holdToSprint = true;
-
-        public bool SprintToggledOn { get; private set; }
         public PlayerInput playerInput { get; private set; }
         public Vector2 MovementInput { get; private set; }
         public Vector2 LookInput { get; private set; }
+        public bool JumpPressed { get; private set; }
+        public bool SprintToggledOn { get; private set; }
+        public bool WalkToggledOn { get; private set; }
+        #endregion
 
+        #region Startup
         private void OnEnable()
         {
             playerInput = new PlayerInput();
@@ -27,7 +31,16 @@ namespace TD
             playerInput.PlayerMovement.Disable();
             playerInput.PlayerMovement.RemoveCallbacks(this);
         }
+        #endregion
 
+        #region Late Update Logic
+        private void LateUpdate()
+        {
+            JumpPressed = false;
+        }
+        #endregion
+
+        #region Input Callbacks
         public void OnMovement(InputAction.CallbackContext context)
         {
             MovementInput = context.ReadValue<Vector2>();
@@ -50,6 +63,23 @@ namespace TD
                 SprintToggledOn = !holdToSprint && SprintToggledOn;
             }
         }
+
+        public void OnJump(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            JumpPressed = true;
+        }
+
+        public void OnWalk(InputAction.CallbackContext context)
+        {
+            if (!context.performed)
+                return;
+
+            WalkToggledOn = !WalkToggledOn;
+        }
+        #endregion
     }
 
 }
