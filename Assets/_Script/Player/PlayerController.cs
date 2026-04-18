@@ -7,8 +7,8 @@ namespace TD
     {
         #region Class Variables
         [Header("Components")]
-        [SerializeField] private CharacterController _characterController;
-        [SerializeField] private Camera _playerCamera;
+        [SerializeField] private CharacterController characterController;
+        [SerializeField] private Camera playerCamera;
         public float RotationMismatch { get; private set; } = 0f;
         public bool IsRotatingToTarget { get; private set; } = false;
 
@@ -21,9 +21,11 @@ namespace TD
         public float sprintSpeed = 7f;
         public float inAirAcceleration = 25f;
         public float drag = 20f;
+        public float inAirDrag = 5f;
         public float gravity = 25f;
         public float jumpSpeed = 1.0f;
         public float movingThreshold = 0.01f;
+        public float terminalVelocity = 50f;
 
         [Header("Animation")]
         public float playerModelRotationSpeed = 10f;
@@ -35,32 +37,32 @@ namespace TD
         public float lookLimitV = 89f;
 
         [Header("Environment Details")]
-        [SerializeField] private LayerMask _groundLayers;
+        [SerializeField] private LayerMask groundLayers;
 
-        private PlayerLocomotionInput _playerLocomotionInput;
-        private PlayerState _playerState;
+        private PlayerLocomotionInput playerLocomotionInput;
+        private PlayerState playerState;
 
-        private Vector2 _cameraRotation = Vector2.zero;
-        private Vector2 _playerTargetRotation = Vector2.zero;
+        private Vector2 cameraRotation = Vector2.zero;
+        private Vector2 playerTargetRotation = Vector2.zero;
 
-        private bool _jumpedLastFrame = false;
-        private bool _isRotatingClockwise = false;
-        private float _rotatingToTargetTimer = 0f;
-        private float _verticalVelocity = 0f;
-        private float _antiBump;
-        private float _stepOffset;
+        private bool jumpedLastFrame = false;
+        private bool isRotatingClockwise = false;
+        private float rotatingToTargetTimer = 0f;
+        private float verticalVelocity = 0f;
+        private float antiBump;
+        private float stepOffset;
 
-        private PlayerMovementState _lastMovementState = PlayerMovementState.Falling;
+        private PlayerMovementState lastMovementState = PlayerMovementState.Falling;
         #endregion
 
         #region Startup
         private void Awake()
         {
-            _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
-            _playerState = GetComponent<PlayerState>();
+            playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
+            playerState = GetComponent<PlayerState>();
 
-            _antiBump = sprintSpeed;
-            _stepOffset = _characterController.stepOffset;
+            antiBump = sprintSpeed;
+            stepOffset = characterController.stepOffset;
         }
         #endregion
 
@@ -74,67 +76,72 @@ namespace TD
 
         private void UpdateMovementState()
         {
-            _lastMovementState = _playerState.CurrentPlayerMovementState;
+            lastMovementState = playerState.CurrentPlayerMovementState;
 
             bool canRun = CanRun();
-            bool isMovementInput = _playerLocomotionInput.MovementInput != Vector2.zero;             //order
-            bool isMovingLaterally = IsMovingLaterally();                                            //matters
-            bool isSprinting = _playerLocomotionInput.SprintToggledOn && isMovingLaterally;          //order
-            bool isWalking = isMovingLaterally && (!canRun || _playerLocomotionInput.WalkToggledOn); //matters
+            bool isMovementInput = playerLocomotionInput.MovementInput != Vector2.zero;             
+            bool isMovingLaterally = IsMovingLaterally();                                            
+            bool isSprinting = playerLocomotionInput.SprintToggledOn && isMovingLaterally;          
+            bool isWalking = isMovingLaterally && (!canRun || playerLocomotionInput.WalkToggledOn); 
             bool isGrounded = IsGrounded();
 
             PlayerMovementState lateralState = isWalking ? PlayerMovementState.Walking :
                                                isSprinting ? PlayerMovementState.Sprinting :
                                                isMovingLaterally || isMovementInput ? PlayerMovementState.Running : PlayerMovementState.Idling;
 
-            _playerState.SetPlayerMovementState(lateralState);
+            playerState.SetPlayerMovementState(lateralState);
 
             // Control Airborn State
-            if ((!isGrounded || _jumpedLastFrame) && _characterController.velocity.y > 0f)
+            if ((!isGrounded || jumpedLastFrame) && characterController.velocity.y > 0f)
             {
-                _playerState.SetPlayerMovementState(PlayerMovementState.Jumping);
-                _jumpedLastFrame = false;
-                _characterController.stepOffset = 0f;
+                playerState.SetPlayerMovementState(PlayerMovementState.Jumping);
+                jumpedLastFrame = false;
+                characterController.stepOffset = 0f;
             }
-            else if ((!isGrounded || _jumpedLastFrame) && _characterController.velocity.y <= 0f)
+            else if ((!isGrounded || jumpedLastFrame) && characterController.velocity.y <= 0f)
             {
-                _playerState.SetPlayerMovementState(PlayerMovementState.Falling);
-                _jumpedLastFrame = false;
-                _characterController.stepOffset = 0f;
+                playerState.SetPlayerMovementState(PlayerMovementState.Falling);
+                jumpedLastFrame = false;
+                characterController.stepOffset = 0f;
             }
             else
             {
-                _characterController.stepOffset = _stepOffset;
+                characterController.stepOffset = stepOffset;
             }
         }
 
         private void HandleVerticalMovement()
         {
-            bool isGrounded = _playerState.InGroundedState();
+            bool isGrounded = playerState.InGroundedState();
 
-            _verticalVelocity -= gravity * Time.deltaTime;
+            verticalVelocity -= gravity * Time.deltaTime;
 
-            if (isGrounded && _verticalVelocity < 0)
-                _verticalVelocity = -_antiBump;
+            if (isGrounded && verticalVelocity < 0)
+                verticalVelocity = -antiBump;
 
-            if (_playerLocomotionInput.JumpPressed && isGrounded)
+            if (playerLocomotionInput.JumpPressed && isGrounded)
             {
-                _verticalVelocity += Mathf.Sqrt(jumpSpeed * 3 * gravity);
-                _jumpedLastFrame = true;
+                verticalVelocity += Mathf.Sqrt(jumpSpeed * 3 * gravity);
+                jumpedLastFrame = true;
             }
 
-            if (_playerState.IsStateGroundedState(_lastMovementState) && !isGrounded)
+            if (playerState.IsStateGroundedState(lastMovementState) && !isGrounded)
             {
-                _verticalVelocity += _antiBump;
+                verticalVelocity += antiBump;
+            }
+
+            if (Mathf.Abs(verticalVelocity) > Mathf.Abs(terminalVelocity))
+            {
+                verticalVelocity = 1f * Mathf.Abs(terminalVelocity);
             }
         }
 
         private void HandleLateralMovement()
         {
             // Create quick references for current state
-            bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
-            bool isGrounded = _playerState.InGroundedState();
-            bool isWalking = _playerState.CurrentPlayerMovementState == PlayerMovementState.Walking;
+            bool isSprinting = playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
+            bool isGrounded = playerState.InGroundedState();
+            bool isWalking = playerState.CurrentPlayerMovementState == PlayerMovementState.Walking;
 
             // State dependent acceleration and speed
             float lateralAcceleration = !isGrounded ? inAirAcceleration :
@@ -145,31 +152,32 @@ namespace TD
                                           isWalking ? walkSpeed :
                                           isSprinting ? sprintSpeed : runSpeed;
 
-            Vector3 cameraForwardXZ = new Vector3(_playerCamera.transform.forward.x, 0f, _playerCamera.transform.forward.z).normalized;
-            Vector3 cameraRightXZ = new Vector3(_playerCamera.transform.right.x, 0f, _playerCamera.transform.right.z).normalized;
-            Vector3 movementDirection = cameraRightXZ * _playerLocomotionInput.MovementInput.x + cameraForwardXZ * _playerLocomotionInput.MovementInput.y;
+            Vector3 cameraForwardXZ = new Vector3(playerCamera.transform.forward.x, 0f, playerCamera.transform.forward.z).normalized;
+            Vector3 cameraRightXZ = new Vector3(playerCamera.transform.right.x, 0f, playerCamera.transform.right.z).normalized;
+            Vector3 movementDirection = cameraRightXZ * playerLocomotionInput.MovementInput.x + cameraForwardXZ * playerLocomotionInput.MovementInput.y;
 
             Vector3 movementDelta = movementDirection * lateralAcceleration * Time.deltaTime;
-            Vector3 newVelocity = _characterController.velocity + movementDelta;
+            Vector3 newVelocity = characterController.velocity + movementDelta;
 
             // Add drag to player
-            Vector3 currentDrag = newVelocity.normalized * drag * Time.deltaTime;
-            newVelocity = (newVelocity.magnitude > drag * Time.deltaTime) ? newVelocity - currentDrag : Vector3.zero;
+            float dragMagnitude = !isGrounded ? drag : inAirDrag;
+            Vector3 currentDrag = newVelocity.normalized * dragMagnitude * Time.deltaTime;
+            newVelocity = (newVelocity.magnitude > dragMagnitude * Time.deltaTime) ? newVelocity - currentDrag : Vector3.zero;
             newVelocity = Vector3.ClampMagnitude(new Vector3(newVelocity.x, 0f, newVelocity.z), clampLateralMagnitude);
-            newVelocity.y += _verticalVelocity;
+            newVelocity.y += verticalVelocity;
             newVelocity = !isGrounded ? HandleSteepWalls(newVelocity) : newVelocity;
 
             // Move character (Unity suggests only calling this once per tick)
-            _characterController.Move(newVelocity * Time.deltaTime);
+            characterController.Move(newVelocity * Time.deltaTime);
         }
 
         private Vector3 HandleSteepWalls(Vector3 velocity)
         {
-            Vector3 normal = CharacterControllerUtils.GetNormalWithSphereCast(_characterController, _groundLayers);
+            Vector3 normal = CharacterControllerUtils.GetNormalWithSphereCast(characterController, groundLayers);
             float angle = Vector3.Angle(normal, Vector3.up);
-            bool validAngle = angle <= _characterController.slopeLimit;
+            bool validAngle = angle <= characterController.slopeLimit;
 
-            if (!validAngle && _verticalVelocity < 0f)
+            if (!validAngle && verticalVelocity < 0f)
                 velocity = Vector3.ProjectOnPlane(velocity, normal);
 
             return velocity;
@@ -184,14 +192,14 @@ namespace TD
 
         private void UpdateCameraRotation()
         {
-            _cameraRotation.x += lookSenseH * _playerLocomotionInput.LookInput.x;
-            _cameraRotation.y = Mathf.Clamp(_cameraRotation.y - lookSenseV * _playerLocomotionInput.LookInput.y, -lookLimitV, lookLimitV);
+            cameraRotation.x += lookSenseH * playerLocomotionInput.LookInput.x;
+            cameraRotation.y = Mathf.Clamp(cameraRotation.y - lookSenseV * playerLocomotionInput.LookInput.y, -lookLimitV, lookLimitV);
 
-            _playerTargetRotation.x += transform.eulerAngles.x + lookSenseH * _playerLocomotionInput.LookInput.x;
+            playerTargetRotation.x += transform.eulerAngles.x + lookSenseH * playerLocomotionInput.LookInput.x;
 
             float rotationTolerance = 90f;
-            bool isIdling = _playerState.CurrentPlayerMovementState == PlayerMovementState.Idling;
-            IsRotatingToTarget = _rotatingToTargetTimer > 0;
+            bool isIdling = playerState.CurrentPlayerMovementState == PlayerMovementState.Idling;
+            IsRotatingToTarget = rotatingToTargetTimer > 0;
 
             // ROTATE if we're not idling
             if (!isIdling)
@@ -204,10 +212,10 @@ namespace TD
                 UpdateIdleRotation(rotationTolerance);
             }
 
-            _playerCamera.transform.rotation = Quaternion.Euler(_cameraRotation.y, _cameraRotation.x, 0f);
+            playerCamera.transform.rotation = Quaternion.Euler(cameraRotation.y, cameraRotation.x, 0f);
 
             // Get angle between camera and player
-            Vector3 camForwardProjectedXZ = new Vector3(_playerCamera.transform.forward.x, 0f, _playerCamera.transform.forward.z).normalized;
+            Vector3 camForwardProjectedXZ = new Vector3(playerCamera.transform.forward.x, 0f, playerCamera.transform.forward.z).normalized;
             Vector3 crossProduct = Vector3.Cross(transform.forward, camForwardProjectedXZ);
             float sign = Mathf.Sign(Vector3.Dot(crossProduct, transform.up));
             RotationMismatch = sign * Vector3.Angle(transform.forward, camForwardProjectedXZ);
@@ -218,14 +226,14 @@ namespace TD
             // Initiate new rotation direction
             if (Mathf.Abs(RotationMismatch) > rotationTolerance)
             {
-                _rotatingToTargetTimer = rotateToTargetTime;
-                _isRotatingClockwise = RotationMismatch > rotationTolerance;
+                rotatingToTargetTimer = rotateToTargetTime;
+                isRotatingClockwise = RotationMismatch > rotationTolerance;
             }
-            _rotatingToTargetTimer -= Time.deltaTime;
+            rotatingToTargetTimer -= Time.deltaTime;
 
             // Rotate player
-            if (_isRotatingClockwise && RotationMismatch > 0f ||
-                !_isRotatingClockwise && RotationMismatch < 0f)
+            if (isRotatingClockwise && RotationMismatch > 0f ||
+                !isRotatingClockwise && RotationMismatch < 0f)
             {
                 RotatePlayerToTarget();
             }
@@ -233,7 +241,7 @@ namespace TD
 
         private void RotatePlayerToTarget()
         {
-            Quaternion targetRotationX = Quaternion.Euler(0f, _playerTargetRotation.x, 0f);
+            Quaternion targetRotationX = Quaternion.Euler(0f, playerTargetRotation.x, 0f);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotationX, playerModelRotationSpeed * Time.deltaTime);
         }
         #endregion
@@ -241,41 +249,41 @@ namespace TD
         #region State Checks
         private bool IsMovingLaterally()
         {
-            Vector3 lateralVelocity = new Vector3(_characterController.velocity.x, 0f, _characterController.velocity.y);
+            Vector3 lateralVelocity = new Vector3(characterController.velocity.x, 0f, characterController.velocity.z);
 
             return lateralVelocity.magnitude > movingThreshold;
         }
 
         private bool IsGrounded()
         {
-            bool grounded = _playerState.InGroundedState() ? IsGroundedWhileGrounded() : IsGroundedWhileAirborne();
+            bool grounded = playerState.InGroundedState() ? IsGroundedWhileGrounded() : IsGroundedWhileAirborne();
 
             return grounded;
         }
 
         private bool IsGroundedWhileGrounded()
         {
-            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - _characterController.radius, transform.position.z);
+            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - characterController.radius, transform.position.z);
 
-            bool grounded = Physics.CheckSphere(spherePosition, _characterController.radius, _groundLayers, QueryTriggerInteraction.Ignore);
+            bool grounded = Physics.CheckSphere(spherePosition, characterController.radius, groundLayers, QueryTriggerInteraction.Ignore);
 
             return grounded;
         }
 
         private bool IsGroundedWhileAirborne()
         {
-            Vector3 normal = CharacterControllerUtils.GetNormalWithSphereCast(_characterController, _groundLayers);
+            Vector3 normal = CharacterControllerUtils.GetNormalWithSphereCast(characterController, groundLayers);
             float angle = Vector3.Angle(normal, Vector3.up);
             print(angle);
-            bool validAngle = angle <= _characterController.slopeLimit;
+            bool validAngle = angle <= characterController.slopeLimit;
 
-            return _characterController.isGrounded && validAngle;
+            return characterController.isGrounded && validAngle;
         }
 
         private bool CanRun()
         {
             // This means player is moving diagonally at 45 degrees or forward, if so, we can run
-            return _playerLocomotionInput.MovementInput.y >= Mathf.Abs(_playerLocomotionInput.MovementInput.x);
+            return playerLocomotionInput.MovementInput.y >= Mathf.Abs(playerLocomotionInput.MovementInput.x);
         }
         #endregion
     }

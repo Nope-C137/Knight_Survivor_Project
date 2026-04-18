@@ -91,7 +91,7 @@ namespace TD
     ""name"": ""InputSystem_Actions"",
     ""maps"": [
         {
-            ""name"": ""Player Movement"",
+            ""name"": ""PlayerMovementInput"",
             ""id"": ""df70fa95-8a34-4494-b137-73ab6b9c7d37"",
             ""actions"": [
                 {
@@ -237,6 +237,34 @@ namespace TD
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Walk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""ThirdPersonInput"",
+            ""id"": ""f555ce16-77f0-4bad-b104-46f8a07bc689"",
+            ""actions"": [
+                {
+                    ""name"": ""ScrollCamera"",
+                    ""type"": ""Value"",
+                    ""id"": ""e52503f8-0cb4-4475-900a-846c2bad6269"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""cdfa8fd0-9d1f-4804-94e8-90a19a8ec5f0"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""ScrollCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -822,13 +850,16 @@ namespace TD
         }
     ]
 }");
-            // Player Movement
-            m_PlayerMovement = asset.FindActionMap("Player Movement", throwIfNotFound: true);
-            m_PlayerMovement_Movement = m_PlayerMovement.FindAction("Movement", throwIfNotFound: true);
-            m_PlayerMovement_Look = m_PlayerMovement.FindAction("Look", throwIfNotFound: true);
-            m_PlayerMovement_Sprinting = m_PlayerMovement.FindAction("Sprinting", throwIfNotFound: true);
-            m_PlayerMovement_Jump = m_PlayerMovement.FindAction("Jump", throwIfNotFound: true);
-            m_PlayerMovement_Walk = m_PlayerMovement.FindAction("Walk", throwIfNotFound: true);
+            // PlayerMovementInput
+            m_PlayerMovementInput = asset.FindActionMap("PlayerMovementInput", throwIfNotFound: true);
+            m_PlayerMovementInput_Movement = m_PlayerMovementInput.FindAction("Movement", throwIfNotFound: true);
+            m_PlayerMovementInput_Look = m_PlayerMovementInput.FindAction("Look", throwIfNotFound: true);
+            m_PlayerMovementInput_Sprinting = m_PlayerMovementInput.FindAction("Sprinting", throwIfNotFound: true);
+            m_PlayerMovementInput_Jump = m_PlayerMovementInput.FindAction("Jump", throwIfNotFound: true);
+            m_PlayerMovementInput_Walk = m_PlayerMovementInput.FindAction("Walk", throwIfNotFound: true);
+            // ThirdPersonInput
+            m_ThirdPersonInput = asset.FindActionMap("ThirdPersonInput", throwIfNotFound: true);
+            m_ThirdPersonInput_ScrollCamera = m_ThirdPersonInput.FindAction("ScrollCamera", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -845,7 +876,8 @@ namespace TD
 
         ~@PlayerInput()
         {
-            UnityEngine.Debug.Assert(!m_PlayerMovement.enabled, "This will cause a leak and performance issues, PlayerInput.PlayerMovement.Disable() has not been called.");
+            UnityEngine.Debug.Assert(!m_PlayerMovementInput.enabled, "This will cause a leak and performance issues, PlayerInput.PlayerMovementInput.Disable() has not been called.");
+            UnityEngine.Debug.Assert(!m_ThirdPersonInput.enabled, "This will cause a leak and performance issues, PlayerInput.ThirdPersonInput.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, PlayerInput.UI.Disable() has not been called.");
         }
 
@@ -919,49 +951,49 @@ namespace TD
             return asset.FindBinding(bindingMask, out action);
         }
 
-        // Player Movement
-        private readonly InputActionMap m_PlayerMovement;
-        private List<IPlayerMovementActions> m_PlayerMovementActionsCallbackInterfaces = new List<IPlayerMovementActions>();
-        private readonly InputAction m_PlayerMovement_Movement;
-        private readonly InputAction m_PlayerMovement_Look;
-        private readonly InputAction m_PlayerMovement_Sprinting;
-        private readonly InputAction m_PlayerMovement_Jump;
-        private readonly InputAction m_PlayerMovement_Walk;
+        // PlayerMovementInput
+        private readonly InputActionMap m_PlayerMovementInput;
+        private List<IPlayerMovementInputActions> m_PlayerMovementInputActionsCallbackInterfaces = new List<IPlayerMovementInputActions>();
+        private readonly InputAction m_PlayerMovementInput_Movement;
+        private readonly InputAction m_PlayerMovementInput_Look;
+        private readonly InputAction m_PlayerMovementInput_Sprinting;
+        private readonly InputAction m_PlayerMovementInput_Jump;
+        private readonly InputAction m_PlayerMovementInput_Walk;
         /// <summary>
-        /// Provides access to input actions defined in input action map "Player Movement".
+        /// Provides access to input actions defined in input action map "PlayerMovementInput".
         /// </summary>
-        public struct PlayerMovementActions
+        public struct PlayerMovementInputActions
         {
             private @PlayerInput m_Wrapper;
 
             /// <summary>
             /// Construct a new instance of the input action map wrapper class.
             /// </summary>
-            public PlayerMovementActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+            public PlayerMovementInputActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
             /// <summary>
-            /// Provides access to the underlying input action "PlayerMovement/Movement".
+            /// Provides access to the underlying input action "PlayerMovementInput/Movement".
             /// </summary>
-            public InputAction @Movement => m_Wrapper.m_PlayerMovement_Movement;
+            public InputAction @Movement => m_Wrapper.m_PlayerMovementInput_Movement;
             /// <summary>
-            /// Provides access to the underlying input action "PlayerMovement/Look".
+            /// Provides access to the underlying input action "PlayerMovementInput/Look".
             /// </summary>
-            public InputAction @Look => m_Wrapper.m_PlayerMovement_Look;
+            public InputAction @Look => m_Wrapper.m_PlayerMovementInput_Look;
             /// <summary>
-            /// Provides access to the underlying input action "PlayerMovement/Sprinting".
+            /// Provides access to the underlying input action "PlayerMovementInput/Sprinting".
             /// </summary>
-            public InputAction @Sprinting => m_Wrapper.m_PlayerMovement_Sprinting;
+            public InputAction @Sprinting => m_Wrapper.m_PlayerMovementInput_Sprinting;
             /// <summary>
-            /// Provides access to the underlying input action "PlayerMovement/Jump".
+            /// Provides access to the underlying input action "PlayerMovementInput/Jump".
             /// </summary>
-            public InputAction @Jump => m_Wrapper.m_PlayerMovement_Jump;
+            public InputAction @Jump => m_Wrapper.m_PlayerMovementInput_Jump;
             /// <summary>
-            /// Provides access to the underlying input action "PlayerMovement/Walk".
+            /// Provides access to the underlying input action "PlayerMovementInput/Walk".
             /// </summary>
-            public InputAction @Walk => m_Wrapper.m_PlayerMovement_Walk;
+            public InputAction @Walk => m_Wrapper.m_PlayerMovementInput_Walk;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
-            public InputActionMap Get() { return m_Wrapper.m_PlayerMovement; }
+            public InputActionMap Get() { return m_Wrapper.m_PlayerMovementInput; }
             /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
             public void Enable() { Get().Enable(); }
             /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
@@ -969,9 +1001,9 @@ namespace TD
             /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
             public bool enabled => Get().enabled;
             /// <summary>
-            /// Implicitly converts an <see ref="PlayerMovementActions" /> to an <see ref="InputActionMap" /> instance.
+            /// Implicitly converts an <see ref="PlayerMovementInputActions" /> to an <see ref="InputActionMap" /> instance.
             /// </summary>
-            public static implicit operator InputActionMap(PlayerMovementActions set) { return set.Get(); }
+            public static implicit operator InputActionMap(PlayerMovementInputActions set) { return set.Get(); }
             /// <summary>
             /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
             /// </summary>
@@ -979,11 +1011,11 @@ namespace TD
             /// <remarks>
             /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
             /// </remarks>
-            /// <seealso cref="PlayerMovementActions" />
-            public void AddCallbacks(IPlayerMovementActions instance)
+            /// <seealso cref="PlayerMovementInputActions" />
+            public void AddCallbacks(IPlayerMovementInputActions instance)
             {
-                if (instance == null || m_Wrapper.m_PlayerMovementActionsCallbackInterfaces.Contains(instance)) return;
-                m_Wrapper.m_PlayerMovementActionsCallbackInterfaces.Add(instance);
+                if (instance == null || m_Wrapper.m_PlayerMovementInputActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_PlayerMovementInputActionsCallbackInterfaces.Add(instance);
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
@@ -1007,8 +1039,8 @@ namespace TD
             /// <remarks>
             /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
             /// </remarks>
-            /// <seealso cref="PlayerMovementActions" />
-            private void UnregisterCallbacks(IPlayerMovementActions instance)
+            /// <seealso cref="PlayerMovementInputActions" />
+            private void UnregisterCallbacks(IPlayerMovementInputActions instance)
             {
                 @Movement.started -= instance.OnMovement;
                 @Movement.performed -= instance.OnMovement;
@@ -1028,12 +1060,12 @@ namespace TD
             }
 
             /// <summary>
-            /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PlayerMovementActions.UnregisterCallbacks(IPlayerMovementActions)" />.
+            /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PlayerMovementInputActions.UnregisterCallbacks(IPlayerMovementInputActions)" />.
             /// </summary>
-            /// <seealso cref="PlayerMovementActions.UnregisterCallbacks(IPlayerMovementActions)" />
-            public void RemoveCallbacks(IPlayerMovementActions instance)
+            /// <seealso cref="PlayerMovementInputActions.UnregisterCallbacks(IPlayerMovementInputActions)" />
+            public void RemoveCallbacks(IPlayerMovementInputActions instance)
             {
-                if (m_Wrapper.m_PlayerMovementActionsCallbackInterfaces.Remove(instance))
+                if (m_Wrapper.m_PlayerMovementInputActionsCallbackInterfaces.Remove(instance))
                     UnregisterCallbacks(instance);
             }
 
@@ -1043,21 +1075,117 @@ namespace TD
             /// <remarks>
             /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
             /// </remarks>
-            /// <seealso cref="PlayerMovementActions.AddCallbacks(IPlayerMovementActions)" />
-            /// <seealso cref="PlayerMovementActions.RemoveCallbacks(IPlayerMovementActions)" />
-            /// <seealso cref="PlayerMovementActions.UnregisterCallbacks(IPlayerMovementActions)" />
-            public void SetCallbacks(IPlayerMovementActions instance)
+            /// <seealso cref="PlayerMovementInputActions.AddCallbacks(IPlayerMovementInputActions)" />
+            /// <seealso cref="PlayerMovementInputActions.RemoveCallbacks(IPlayerMovementInputActions)" />
+            /// <seealso cref="PlayerMovementInputActions.UnregisterCallbacks(IPlayerMovementInputActions)" />
+            public void SetCallbacks(IPlayerMovementInputActions instance)
             {
-                foreach (var item in m_Wrapper.m_PlayerMovementActionsCallbackInterfaces)
+                foreach (var item in m_Wrapper.m_PlayerMovementInputActionsCallbackInterfaces)
                     UnregisterCallbacks(item);
-                m_Wrapper.m_PlayerMovementActionsCallbackInterfaces.Clear();
+                m_Wrapper.m_PlayerMovementInputActionsCallbackInterfaces.Clear();
                 AddCallbacks(instance);
             }
         }
         /// <summary>
-        /// Provides a new <see cref="PlayerMovementActions" /> instance referencing this action map.
+        /// Provides a new <see cref="PlayerMovementInputActions" /> instance referencing this action map.
         /// </summary>
-        public PlayerMovementActions @PlayerMovement => new PlayerMovementActions(this);
+        public PlayerMovementInputActions @PlayerMovementInput => new PlayerMovementInputActions(this);
+
+        // ThirdPersonInput
+        private readonly InputActionMap m_ThirdPersonInput;
+        private List<IThirdPersonInputActions> m_ThirdPersonInputActionsCallbackInterfaces = new List<IThirdPersonInputActions>();
+        private readonly InputAction m_ThirdPersonInput_ScrollCamera;
+        /// <summary>
+        /// Provides access to input actions defined in input action map "ThirdPersonInput".
+        /// </summary>
+        public struct ThirdPersonInputActions
+        {
+            private @PlayerInput m_Wrapper;
+
+            /// <summary>
+            /// Construct a new instance of the input action map wrapper class.
+            /// </summary>
+            public ThirdPersonInputActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+            /// <summary>
+            /// Provides access to the underlying input action "ThirdPersonInput/ScrollCamera".
+            /// </summary>
+            public InputAction @ScrollCamera => m_Wrapper.m_ThirdPersonInput_ScrollCamera;
+            /// <summary>
+            /// Provides access to the underlying input action map instance.
+            /// </summary>
+            public InputActionMap Get() { return m_Wrapper.m_ThirdPersonInput; }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+            public void Enable() { Get().Enable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+            public void Disable() { Get().Disable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+            public bool enabled => Get().enabled;
+            /// <summary>
+            /// Implicitly converts an <see ref="ThirdPersonInputActions" /> to an <see ref="InputActionMap" /> instance.
+            /// </summary>
+            public static implicit operator InputActionMap(ThirdPersonInputActions set) { return set.Get(); }
+            /// <summary>
+            /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <param name="instance">Callback instance.</param>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+            /// </remarks>
+            /// <seealso cref="ThirdPersonInputActions" />
+            public void AddCallbacks(IThirdPersonInputActions instance)
+            {
+                if (instance == null || m_Wrapper.m_ThirdPersonInputActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_ThirdPersonInputActionsCallbackInterfaces.Add(instance);
+                @ScrollCamera.started += instance.OnScrollCamera;
+                @ScrollCamera.performed += instance.OnScrollCamera;
+                @ScrollCamera.canceled += instance.OnScrollCamera;
+            }
+
+            /// <summary>
+            /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <remarks>
+            /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+            /// </remarks>
+            /// <seealso cref="ThirdPersonInputActions" />
+            private void UnregisterCallbacks(IThirdPersonInputActions instance)
+            {
+                @ScrollCamera.started -= instance.OnScrollCamera;
+                @ScrollCamera.performed -= instance.OnScrollCamera;
+                @ScrollCamera.canceled -= instance.OnScrollCamera;
+            }
+
+            /// <summary>
+            /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="ThirdPersonInputActions.UnregisterCallbacks(IThirdPersonInputActions)" />.
+            /// </summary>
+            /// <seealso cref="ThirdPersonInputActions.UnregisterCallbacks(IThirdPersonInputActions)" />
+            public void RemoveCallbacks(IThirdPersonInputActions instance)
+            {
+                if (m_Wrapper.m_ThirdPersonInputActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            /// <summary>
+            /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+            /// </summary>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+            /// </remarks>
+            /// <seealso cref="ThirdPersonInputActions.AddCallbacks(IThirdPersonInputActions)" />
+            /// <seealso cref="ThirdPersonInputActions.RemoveCallbacks(IThirdPersonInputActions)" />
+            /// <seealso cref="ThirdPersonInputActions.UnregisterCallbacks(IThirdPersonInputActions)" />
+            public void SetCallbacks(IThirdPersonInputActions instance)
+            {
+                foreach (var item in m_Wrapper.m_ThirdPersonInputActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_ThirdPersonInputActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        /// <summary>
+        /// Provides a new <see cref="ThirdPersonInputActions" /> instance referencing this action map.
+        /// </summary>
+        public ThirdPersonInputActions @ThirdPersonInput => new ThirdPersonInputActions(this);
 
         // UI
         private readonly InputActionMap m_UI;
@@ -1319,11 +1447,11 @@ namespace TD
             }
         }
         /// <summary>
-        /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player Movement" which allows adding and removing callbacks.
+        /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PlayerMovementInput" which allows adding and removing callbacks.
         /// </summary>
-        /// <seealso cref="PlayerMovementActions.AddCallbacks(IPlayerMovementActions)" />
-        /// <seealso cref="PlayerMovementActions.RemoveCallbacks(IPlayerMovementActions)" />
-        public interface IPlayerMovementActions
+        /// <seealso cref="PlayerMovementInputActions.AddCallbacks(IPlayerMovementInputActions)" />
+        /// <seealso cref="PlayerMovementInputActions.RemoveCallbacks(IPlayerMovementInputActions)" />
+        public interface IPlayerMovementInputActions
         {
             /// <summary>
             /// Method invoked when associated input action "Movement" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
@@ -1360,6 +1488,21 @@ namespace TD
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnWalk(InputAction.CallbackContext context);
+        }
+        /// <summary>
+        /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "ThirdPersonInput" which allows adding and removing callbacks.
+        /// </summary>
+        /// <seealso cref="ThirdPersonInputActions.AddCallbacks(IThirdPersonInputActions)" />
+        /// <seealso cref="ThirdPersonInputActions.RemoveCallbacks(IThirdPersonInputActions)" />
+        public interface IThirdPersonInputActions
+        {
+            /// <summary>
+            /// Method invoked when associated input action "ScrollCamera" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnScrollCamera(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

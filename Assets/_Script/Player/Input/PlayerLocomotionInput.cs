@@ -4,11 +4,10 @@ using UnityEngine.InputSystem;
 namespace TD
 {
     [DefaultExecutionOrder(-2)]
-    public class PlayerLocomotionInput : MonoBehaviour, PlayerInput.IPlayerMovementActions
+    public class PlayerLocomotionInput : MonoBehaviour, PlayerInput.IPlayerMovementInputActions
     {
         #region Class Variables
         [SerializeField] private bool holdToSprint = true;
-        public PlayerInput playerInput { get; private set; }
         public Vector2 MovementInput { get; private set; }
         public Vector2 LookInput { get; private set; }
         public bool JumpPressed { get; private set; }
@@ -19,17 +18,26 @@ namespace TD
         #region Startup
         private void OnEnable()
         {
-            playerInput = new PlayerInput();
-            playerInput.Enable();
+            if(PlayerInputManager.Instance ?.playerInput == null)
+            {
+                Debug.LogError("PlayerInputManager instance or playerInput is null. cannot enable");
+                return;
+            }
 
-            playerInput.PlayerMovement.Enable();
-            playerInput.PlayerMovement.SetCallbacks(this);
+            PlayerInputManager.Instance.playerInput.PlayerMovementInput.Enable();
+            PlayerInputManager.Instance.playerInput.PlayerMovementInput.SetCallbacks(this);
         }
 
         private void OnDisable()
         {
-            playerInput.PlayerMovement.Disable();
-            playerInput.PlayerMovement.RemoveCallbacks(this);
+            if (PlayerInputManager.Instance?.playerInput == null)
+            {
+                Debug.LogError("PlayerInputManager instance or playerInput is null. cannot disable");
+                return;
+            }
+
+            PlayerInputManager.Instance.playerInput.PlayerMovementInput.Disable();
+            PlayerInputManager.Instance.playerInput.PlayerMovementInput.RemoveCallbacks(this);
         }
         #endregion
 
