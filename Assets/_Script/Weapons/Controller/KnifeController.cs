@@ -13,7 +13,7 @@ namespace TD
         {
             base.Attack();
 
-            if (prefab == null) return;
+            if (weaponData.Prefab == null) return;
 
             // Tính toán hướng và vị trí như cũ
             Vector3 throwDirection = playerController.transform.forward;
@@ -30,7 +30,7 @@ namespace TD
                 spawnedKnife.transform.rotation = Quaternion.LookRotation(throwDirection);
                 spawnedKnife.SetActive(true); // Kích hoạt lại để nó hiện ra
 
-                spawnedKnife.GetComponent<KnifeBehaviour>().Initialize(throwDirection, speed);
+                spawnedKnife.GetComponent<KnifeBehaviour>().Initialize(throwDirection, weaponData.Speed);
             }
         }
     }

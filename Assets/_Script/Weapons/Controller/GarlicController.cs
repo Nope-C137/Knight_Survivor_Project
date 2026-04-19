@@ -15,7 +15,7 @@ namespace TD
         {
             base.Attack();
 
-            if (prefab == null) return;
+            if (weaponData.Prefab == null) return;
 
             // Nếu chưa có khiên hoặc khiên cũ đã bị ẩn, thì lấy cái mới từ Pool
             if (activeGarlicShield == null || !activeGarlicShield.activeInHierarchy)
@@ -37,7 +37,7 @@ namespace TD
                 // Khởi tạo logic (như thời gian tồn tại)
                 if (activeGarlicShield.TryGetComponent<GarlicBehaviour>(out var behaviour))
                 {
-                    behaviour.Initialize(Vector3.zero, speed);
+                    behaviour.Initialize(Vector3.zero, weaponData.Speed);
                 }
             }
         }

@@ -7,20 +7,15 @@ namespace TD
     /// </summary>
     public class WeaponController : MonoBehaviour
     {
-        [Header("Weapon Stats")]
-        public GameObject prefab;
-        public float damage;
-        public float speed;
-        public float cooldownDuration;
+        public WeaponScriptableObject weaponData;
         public float currentCooldown;
-        public float pierce;
 
         protected PlayerController playerController;
 
         protected virtual void Start()
         {
             playerController = FindAnyObjectByType<PlayerController>();
-            currentCooldown = cooldownDuration; // Khởi tạo cooldown để có thể bắn ngay khi bắt đầu
+            currentCooldown = weaponData.CooldownDuration; // Khởi tạo cooldown để có thể bắn ngay khi bắt đầu
         }
 
         protected virtual void Update()
@@ -34,7 +29,7 @@ namespace TD
 
         protected virtual void Attack()
         {
-            currentCooldown = cooldownDuration; // Reset cooldown sau khi bắn
+            currentCooldown = weaponData.CooldownDuration; // Reset cooldown sau khi bắn
         }
     }
 }
