@@ -8,7 +8,7 @@ namespace TD
         #region Class Variables
         [Header("Components")]
         [SerializeField] private CharacterController characterController;
-        [SerializeField] private Camera playerCamera;
+        [SerializeField] public Camera playerCamera;
         public float RotationMismatch { get; private set; } = 0f;
         public bool IsRotatingToTarget { get; private set; } = false;
 
