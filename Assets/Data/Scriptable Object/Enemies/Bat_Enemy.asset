@@ -25,5 +25,5 @@ MonoBehaviour:
   climbHopForce: 6
   attackRange: 1
   timeBetweenAttacks: 1.5
-  damage: 10
+  damage: 30
   maxHealth: 50

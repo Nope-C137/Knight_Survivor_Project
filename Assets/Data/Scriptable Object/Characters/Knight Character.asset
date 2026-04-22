@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9cdab03f98c5bc45b54d54f90c65a11, type: 3}
+  m_Name: Knight Character
+  m_EditorClassIdentifier: Assembly-CSharp::TD.CharacterScriptableObject
+  staringWeapon: {fileID: 0}
+  maxHealth: 100
+  recovery: 0
+  walkAcceleration: 25
+  walkSpeed: 2
+  runAcceleration: 35
+  runSpeed: 4
+  sprintAcceleration: 50
+  sprintSpeed: 7
+  inAirAcceleration: 25
+  drag: 20
+  inAirDrag: 5
+  gravity: 25
+  jumpSpeed: 1
+  movingThreshold: 0.01
+  terminalVelocity: 50
+  might: 0
+  projectileSpeed: 0

@@ -39,17 +39,14 @@ namespace TD
                 if (enemy != null)
                 {
                     enemy.TakeDamage(currentDamage); // Đảm bảo rằng TakeDamge được gọi đúng cách với currentDamage không phải weaponData.Damage
-                    ReducePierce(); // Giảm pierce sau khi va chạm với enemy
                 }
             }
-        }
-
-        private void ReducePierce() // Destroy projectile sau khi pierce hết = 0
-        {
-            currentPierce--;
-            if (currentPierce <= 0)
+            else if(collider.CompareTag("Props"))
             {
-                gameObject.SetActive(false);
+                if (collider.gameObject.TryGetComponent(out BreakableProps breakable))
+                {
+                    breakable.TakeDamage(currentDamage); // Đảm bảo rằng TakeDamge được gọi đúng cách với currentDamage không phải weaponData.Damage
+                }
             }
         }
     }

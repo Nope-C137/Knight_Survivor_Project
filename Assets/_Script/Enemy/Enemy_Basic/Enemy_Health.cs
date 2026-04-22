@@ -43,6 +43,16 @@ namespace TD
             Destroy(gameObject);
         }
 
+        private void OnCollisionEnter(Collision collision)
+        {
+            // Gọi TakeDamage khi va chạm với player (giả sử player có tag "Player")
+            if (collision.gameObject.CompareTag("Player"))
+            {
+                PlayerStats player = collision.gameObject.GetComponent<PlayerStats>();
+                player.TakeDamage(currentDamage); //Đảm bảo player có phương thức TakeDamage
+            }
+        }
+
         // Public methods
         //public void ResetHealth()
         //{

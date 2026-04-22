@@ -47,6 +47,14 @@ namespace TD
                     ReducePierce(); // Giảm pierce sau khi va chạm với enemy
                 }
             }
+            else if(collider.CompareTag("Props"))
+            {
+                if (collider.gameObject.TryGetComponent(out BreakableProps breakable))
+                {
+                    breakable.TakeDamage(currentDamage); // Đảm bảo rằng TakeDamge được gọi đúng cách với currentDamage không phải weaponData.Damage
+                    ReducePierce(); // Giảm pierce sau khi va chạm với props
+                }
+            }
         }
 
         private void ReducePierce() // Destroy projectile sau khi pierce hết = 0

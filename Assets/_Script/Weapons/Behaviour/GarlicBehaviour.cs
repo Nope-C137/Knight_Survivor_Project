@@ -56,6 +56,14 @@ namespace TD
                     markedEnemies.Add(collider.gameObject); // Đánh dấu để không bị trừ máu nhiều lần khi va chạm với cùng một enemy
                 }
             }
+            else if(collider.CompareTag("Props"))
+            {
+                if (collider.gameObject.TryGetComponent(out BreakableProps breakable) && !markedEnemies.Contains(collider.gameObject))
+                {
+                    breakable.TakeDamage(currentDamage);
+                    markedEnemies.Add(collider.gameObject); // Đánh dấu để không bị trừ máu nhiều lần khi va chạm với cùng một props
+                }
+            }
         }
     }
 }

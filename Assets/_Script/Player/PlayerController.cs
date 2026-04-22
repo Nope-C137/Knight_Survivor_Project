@@ -12,20 +12,20 @@ namespace TD
         public float RotationMismatch { get; private set; } = 0f;
         public bool IsRotatingToTarget { get; private set; } = false;
 
-        [Header("Base Movement")]
-        public float walkAcceleration = 25f;
-        public float walkSpeed = 2f;
-        public float runAcceleration = 35f;
-        public float runSpeed = 4f;
-        public float sprintAcceleration = 50f;
-        public float sprintSpeed = 7f;
-        public float inAirAcceleration = 25f;
-        public float drag = 20f;
-        public float inAirDrag = 5f;
-        public float gravity = 25f;
-        public float jumpSpeed = 1.0f;
-        public float movingThreshold = 0.01f;
-        public float terminalVelocity = 50f;
+        //[Header("Base Movement")]
+        //public float walkAcceleration = 25f;
+        //public float walkSpeed = 2f;
+        //public float runAcceleration = 35f;
+        //public float runSpeed = 4f;
+        //public float sprintAcceleration = 50f;
+        //public float sprintSpeed = 7f;
+        //public float inAirAcceleration = 25f;
+        //public float drag = 20f;
+        //public float inAirDrag = 5f;
+        //public float gravity = 25f;
+        //public float jumpSpeed = 1.0f;
+        //public float movingThreshold = 0.01f;
+        //public float terminalVelocity = 50f;
 
         [Header("Animation")]
         public float playerModelRotationSpeed = 10f;
@@ -41,6 +41,7 @@ namespace TD
 
         private PlayerLocomotionInput playerLocomotionInput;
         private PlayerState playerState;
+        public CharacterScriptableObject characterData;
 
         private Vector2 cameraRotation = Vector2.zero;
         private Vector2 playerTargetRotation = Vector2.zero;
@@ -61,7 +62,7 @@ namespace TD
             playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
             playerState = GetComponent<PlayerState>();
 
-            antiBump = sprintSpeed;
+            antiBump = characterData.SprintSpeed;
             stepOffset = characterController.stepOffset;
         }
         #endregion
@@ -114,14 +115,14 @@ namespace TD
         {
             bool isGrounded = playerState.InGroundedState();
 
-            verticalVelocity -= gravity * Time.deltaTime;
+            verticalVelocity -= characterData.Gravity * Time.deltaTime;
 
             if (isGrounded && verticalVelocity < 0)
                 verticalVelocity = -antiBump;
 
             if (playerLocomotionInput.JumpPressed && isGrounded)
             {
-                verticalVelocity += Mathf.Sqrt(jumpSpeed * 3 * gravity);
+                verticalVelocity += Mathf.Sqrt(characterData.JumpSpeed * 3 * characterData.Gravity);
                 jumpedLastFrame = true;
             }
 
@@ -130,9 +131,9 @@ namespace TD
                 verticalVelocity += antiBump;
             }
 
-            if (Mathf.Abs(verticalVelocity) > Mathf.Abs(terminalVelocity))
+            if (Mathf.Abs(verticalVelocity) > Mathf.Abs(characterData.TerminalVelocity))
             {
-                verticalVelocity = 1f * Mathf.Abs(terminalVelocity);
+                verticalVelocity = 1f * Mathf.Abs(characterData.TerminalVelocity);
             }
         }
 
@@ -144,14 +145,13 @@ namespace TD
             bool isWalking = playerState.CurrentPlayerMovementState == PlayerMovementState.Walking;
 
             // State dependent acceleration and speed
-            float lateralAcceleration = !isGrounded ? inAirAcceleration :
-                                        isWalking ? walkAcceleration :
-                                        isSprinting ? sprintAcceleration : runAcceleration;
+            float lateralAcceleration = !isGrounded ? characterData.InAirAcceleration :
+                                        isWalking ? characterData.WalkAcceleration :
+                                        isSprinting ? characterData.SprintAcceleration : characterData.RunAcceleration;
 
-            float clampLateralMagnitude = !isGrounded ? sprintSpeed :
-                                          isWalking ? walkSpeed :
-                                          isSprinting ? sprintSpeed : runSpeed;
-
+            float clampLateralMagnitude = !isGrounded ? characterData.SprintSpeed :
+                                          isWalking ? characterData.WalkSpeed :
+                                          isSprinting ? characterData.SprintSpeed : characterData.RunSpeed;
             Vector3 cameraForwardXZ = new Vector3(playerCamera.transform.forward.x, 0f, playerCamera.transform.forward.z).normalized;
             Vector3 cameraRightXZ = new Vector3(playerCamera.transform.right.x, 0f, playerCamera.transform.right.z).normalized;
             Vector3 movementDirection = cameraRightXZ * playerLocomotionInput.MovementInput.x + cameraForwardXZ * playerLocomotionInput.MovementInput.y;
@@ -160,7 +160,7 @@ namespace TD
             Vector3 newVelocity = characterController.velocity + movementDelta;
 
             // Add drag to player
-            float dragMagnitude = !isGrounded ? drag : inAirDrag;
+            float dragMagnitude = !isGrounded ? characterData.Drag : characterData.InAirDrag;
             Vector3 currentDrag = newVelocity.normalized * dragMagnitude * Time.deltaTime;
             newVelocity = (newVelocity.magnitude > dragMagnitude * Time.deltaTime) ? newVelocity - currentDrag : Vector3.zero;
             newVelocity = Vector3.ClampMagnitude(new Vector3(newVelocity.x, 0f, newVelocity.z), clampLateralMagnitude);
@@ -251,7 +251,7 @@ namespace TD
         {
             Vector3 lateralVelocity = new Vector3(characterController.velocity.x, 0f, characterController.velocity.z);
 
-            return lateralVelocity.magnitude > movingThreshold;
+            return lateralVelocity.magnitude > characterData.MovingThreshold;
         }
 
         private bool IsGrounded()

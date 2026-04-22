@@ -685,6 +685,7 @@ GameObject:
   - component: {fileID: 7677177029986230642}
   - component: {fileID: 7099942517947753932}
   - component: {fileID: 7630164548330842639}
+  - component: {fileID: 2748042349433449122}
   m_Layer: 0
   m_Name: Bat
   m_TagString: Enemy
@@ -807,6 +808,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TD.EnemyHealth
   enemyData: {fileID: 11400000, guid: 0be3ae37e12b2b648b3685d38955f786, type: 2}
+--- !u!114 &2748042349433449122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2815829153924552177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9634023a3971c59419a7d095cfeb5f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TD.DropRateManager
+  dropsList:
+  - itemName: Blue Gem
+    itemPrefabs: {fileID: 4289621907874168381, guid: aeab3cda644a04c4dabd6940eca5eeec, type: 3}
+    dropRate: 50
 --- !u!1 &2838263964191967480
 GameObject:
   m_ObjectHideFlags: 0
