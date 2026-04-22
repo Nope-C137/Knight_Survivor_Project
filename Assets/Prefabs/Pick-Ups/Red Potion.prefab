@@ -154,4 +154,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96030a90dff1a6a4696d31ca34a7db6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TD.HealthPotion
+  rotateSpeed: 200
   healhRestoreAmount: 100

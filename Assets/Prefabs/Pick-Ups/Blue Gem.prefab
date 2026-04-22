@@ -155,6 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b30e6a1cb3776c04fbea09917f3abb97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TD.ExperienceGem
+  rotateSpeed: 200
   experienceAmountGranted: 100
 --- !u!1 &4618309349538646123
 GameObject:
