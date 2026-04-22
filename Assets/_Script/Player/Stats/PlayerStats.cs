@@ -8,14 +8,29 @@ namespace TD
     {
         public CharacterScriptableObject characterData;
 
-        //current stats
-        private float currentHealth;
-        private float currentRecovery;
-        private float currentWalkSpeed;
-        private float currentRunSpeed;
-        private float currentSprintSpeed;
-        private float currentMight;
-        private float currentProjectileSpeed;
+        //current stats 
+        [HideInInspector] public float currentHealth;
+        [HideInInspector] public float currentRecovery;
+        [HideInInspector] public float currentMight;
+        [HideInInspector] public float currentProjectileSpeed;
+        [HideInInspector] public float currentwalkAcceleration;
+        [HideInInspector] public float currentWalkSpeed;
+        [HideInInspector] public float currentrunAcceleration;
+        [HideInInspector] public float currentRunSpeed;
+        [HideInInspector] public float currentsprintAcceleration;
+        [HideInInspector] public float currentSprintSpeed;
+        [HideInInspector] public float currentInAirAcceleration;
+        [HideInInspector] public float currentDrag;
+        [HideInInspector] public float currentInAirDrag;
+        [HideInInspector] public float currentGravity;
+        [HideInInspector] public float currentJumpSpeed;
+        [HideInInspector] public float currentMovingThreshold;
+        [HideInInspector] public float currentTerminalVelocity;
+        [HideInInspector] public float currentMagnet;
+
+        //Spawn Weapon
+        [Header("Weapon Spawn")]
+        public List<GameObject> spawnWeapons;
 
         //Experience and level of the player
         [Header("Experience/Level")]
@@ -41,14 +56,31 @@ namespace TD
         public List<LevelRange> levelRanges;
         private void Awake()
         {
+            characterData = CharacterSelector.GetData();
+            CharacterSelector.instance.DestroySingleton(); // Hủy singleton sau khi lấy dữ liệu để tránh xung đột nếu có nhiều đối tượng PlayerStats
+
             // Gắn dữ liệu từ ScriptableObject vào các biến hiện tại
             currentHealth = characterData.MaxHealth;
             currentRecovery = characterData.Recovery;
+            currentwalkAcceleration = characterData.WalkAcceleration;
             currentWalkSpeed = characterData.WalkSpeed;
+            currentrunAcceleration = characterData.RunAcceleration;
             currentRunSpeed = characterData.RunSpeed;
+            currentsprintAcceleration = characterData.SprintAcceleration;
             currentSprintSpeed = characterData.SprintSpeed;
+            currentInAirAcceleration = characterData.InAirAcceleration;
+            currentDrag = characterData.Drag;
+            currentInAirDrag = characterData.InAirDrag;
+            currentGravity = characterData.Gravity;
+            currentJumpSpeed = characterData.JumpSpeed;
+            currentMovingThreshold = characterData.MovingThreshold;
+            currentTerminalVelocity = characterData.TerminalVelocity;
             currentMight = characterData.Might;
             currentProjectileSpeed = characterData.ProjectileSpeed;
+            currentMagnet = characterData.Magnet;
+
+            // Khởi tạo danh sách vũ khí đã spawn
+            SpawnWeapon(characterData.StaringWeapon);
         }
 
         private void Start()
@@ -67,6 +99,8 @@ namespace TD
             {
                 isInvincible = false; // Hết thời gian bất tử
             }
+
+            Recover();
         }
 
         public void IncreaseExperience(int amount)
@@ -129,6 +163,28 @@ namespace TD
                     currentHealth = characterData.MaxHealth; // Đảm bảo không vượt quá máu tối đa
                 }
             }
+        }
+
+        private void Recover()
+        {
+            if(currentHealth < characterData.MaxHealth)
+            {
+                currentHealth += currentRecovery * Time.deltaTime;
+
+                if(currentHealth > characterData.MaxHealth)
+                {
+                    currentHealth = characterData.MaxHealth; // Đảm bảo không vượt quá máu tối đa
+                }
+
+            }
+        }
+
+        public void SpawnWeapon(GameObject weapon)
+        {
+            //Spawn vũ khí tại vị trí của player
+            GameObject spawnedWeapon = Instantiate(weapon, transform.position, Quaternion.identity);
+            spawnedWeapon.transform.SetParent(transform); // Gắn vũ khí vào player để nó di chuyển cùng player
+            spawnWeapons.Add(spawnedWeapon); // Thêm vũ khí vào danh sách vũ khí đã spawn
         }
     }
 }

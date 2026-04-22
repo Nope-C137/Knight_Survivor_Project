@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8480346105531593967}
   - component: {fileID: 4977651309327780052}
   - component: {fileID: 7393880674320258066}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Red Potion
   m_TagString: Untagged
   m_Icon: {fileID: 0}

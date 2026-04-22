@@ -30,7 +30,7 @@ namespace TD
                 spawnedKnife.transform.rotation = Quaternion.LookRotation(throwDirection);
                 spawnedKnife.SetActive(true); // Kích hoạt lại để nó hiện ra
 
-                spawnedKnife.GetComponent<KnifeBehaviour>().Initialize(throwDirection, weaponData.Speed);
+                spawnedKnife.GetComponent<KnifeBehaviour>().Initialize(throwDirection);
             }
         }
     }

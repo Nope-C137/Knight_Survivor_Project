@@ -49,7 +49,7 @@ namespace TD
         {
             if (collider.CompareTag("Enemy") && !markedEnemies.Contains(collider.gameObject))
             {
-                EnemyHealth enemy = collider.GetComponent<EnemyHealth>();
+                Enemy_Stats enemy = collider.GetComponent<Enemy_Stats>();
                 if (enemy != null)
                 {
                     enemy.TakeDamage(currentDamage);

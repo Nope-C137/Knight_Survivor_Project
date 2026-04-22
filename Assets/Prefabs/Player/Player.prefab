@@ -381,6 +381,73 @@ Transform:
   - {fileID: 42983867048088633}
   m_Father: {fileID: 5990624729902618534}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1270151913496542375
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9017085105453721380}
+  - component: {fileID: 7987626305937976822}
+  - component: {fileID: 8520927828354175645}
+  m_Layer: 8
+  m_Name: Collector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9017085105453721380
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270151913496542375}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1303226931341188219}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7987626305937976822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270151913496542375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 940d26f4f47d95d4cbdd40a238ba0d6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TD.PlayerCollector
+  pullSpeed: 300
+--- !u!135 &8520927828354175645
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270151913496542375}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 4
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1465524516722510443
 GameObject:
   m_ObjectHideFlags: 0
@@ -968,52 +1035,6 @@ Transform:
   - {fileID: 285566872610511792}
   m_Father: {fileID: 8060732244444131354}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2333678250820371412
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3062446192120031167}
-  - component: {fileID: 2772611481094112971}
-  m_Layer: 8
-  m_Name: GarlicController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &3062446192120031167
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2333678250820371412}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1303226931341188219}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2772611481094112971
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2333678250820371412}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2437cb35508a954fa4de38bb0fcf5e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TD.GarlicController
-  weaponData: {fileID: 11400000, guid: 71fc04741e382164895095957f34f118, type: 2}
-  currentCooldown: 0
 --- !u!1 &2499600340226205502
 GameObject:
   m_ObjectHideFlags: 0
@@ -1730,7 +1751,6 @@ GameObject:
   - component: {fileID: 6892478258467491425}
   - component: {fileID: 6457565219835064334}
   - component: {fileID: 8497358559593171852}
-  - component: {fileID: 194361253894636897}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -1753,8 +1773,7 @@ Transform:
   m_Children:
   - {fileID: 55239999466297987}
   - {fileID: 7549161561819894746}
-  - {fileID: 1982388632117644660}
-  - {fileID: 3062446192120031167}
+  - {fileID: 9017085105453721380}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &2161190632892742638
@@ -1826,7 +1845,6 @@ MonoBehaviour:
   groundLayers:
     serializedVersion: 2
     m_Bits: 64
-  characterData: {fileID: 11400000, guid: 3cb3bebae87e14f479ebaedb5d652809, type: 2}
 --- !u!114 &990845848049987993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1895,10 +1913,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 996dc56f0a2bd874e9a10f6c44aee85e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TD.PlayerStats
-  characterData: {fileID: 11400000, guid: 3cb3bebae87e14f479ebaedb5d652809, type: 2}
+  characterData: {fileID: 0}
+  currentHealth: 0
+  currentRecovery: 0
+  currentMight: 0
+  currentProjectileSpeed: 0
+  currentwalkAcceleration: 0
+  currentWalkSpeed: 0
+  currentrunAcceleration: 0
+  currentRunSpeed: 0
+  currentsprintAcceleration: 0
+  currentSprintSpeed: 0
+  currentInAirAcceleration: 0
+  currentDrag: 0
+  currentInAirDrag: 0
+  currentGravity: 0
+  currentJumpSpeed: 0
+  currentMovingThreshold: 0
+  currentTerminalVelocity: 0
+  currentMagnet: 0
+  spawnWeapons: []
   experience: 0
   level: 1
   experienceCap: 0
+  invincibilityDuration: 0.5
   levelRanges:
   - startLevel: 1
     endLevel: 3
@@ -1906,18 +1944,6 @@ MonoBehaviour:
   - startLevel: 4
     endLevel: 5
     experienceCapIncrease: 200
---- !u!114 &194361253894636897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5706703047619969031}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 940d26f4f47d95d4cbdd40a238ba0d6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TD.PlayerCollector
 --- !u!1 &5969861846210899196
 GameObject:
   m_ObjectHideFlags: 0
@@ -1949,52 +1975,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4467729116569627830}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5987735483013150713
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1982388632117644660}
-  - component: {fileID: 2776077639674421041}
-  m_Layer: 8
-  m_Name: KnifeController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1982388632117644660
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5987735483013150713}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1303226931341188219}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2776077639674421041
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5987735483013150713}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61649d8428647e645a00bf33787353ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TD.KnifeController
-  weaponData: {fileID: 11400000, guid: d8090bade1f611947b44b339f1d6b887, type: 2}
-  currentCooldown: 0
 --- !u!1 &6495307126693546148
 GameObject:
   m_ObjectHideFlags: 0

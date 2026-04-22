@@ -2,12 +2,22 @@
 
 namespace TD
 {
-    public class EnemyHealth : MonoBehaviour
+    public class Enemy_Stats : MonoBehaviour
     {
         public EnemyScriptableObject enemyData;
-        private float currentHealth;
-        private float currentMoveSpeed;
-        private float currentDamage;
+
+        //Current stats
+        [HideInInspector] public float currentHealth;
+        [HideInInspector] public float currentMoveSpeed;
+        [HideInInspector] public float currentDamage;
+        [HideInInspector] public float currentRotationSpeed;
+        [HideInInspector] public float currentGravityForce;
+        [HideInInspector] public float currentClimbSpeed;
+        [HideInInspector] public float currentClimbHopForce;
+        [HideInInspector] public float currentAttackRange;
+        [HideInInspector] public float currentTimeBetweenAttacks;
+        [HideInInspector] public LayerMask currentGroundLayer;
+        [HideInInspector] public LayerMask currentWallLayer;
 
         private bool isDead = false;
 
@@ -16,6 +26,14 @@ namespace TD
             currentHealth = enemyData.MaxHealth;
             currentMoveSpeed = enemyData.MoveSpeed;
             currentDamage = enemyData.Damage;
+            currentRotationSpeed = enemyData.RotationSpeed;
+            currentGravityForce = enemyData.GravityForce;
+            currentClimbSpeed = enemyData.ClimbSpeed;
+            currentClimbHopForce = enemyData.ClimbHopForce;
+            currentAttackRange = enemyData.AttackRange;
+            currentTimeBetweenAttacks = enemyData.TimeBetweenAttacks;
+            currentGroundLayer = enemyData.GroundLayer;
+            currentWallLayer = enemyData.WallLayer;
         }
 
         public void TakeDamage(float damage)

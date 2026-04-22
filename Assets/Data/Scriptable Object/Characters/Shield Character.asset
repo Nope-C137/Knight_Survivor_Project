@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9cdab03f98c5bc45b54d54f90c65a11, type: 3}
+  m_Name: Shield Character
+  m_EditorClassIdentifier: Assembly-CSharp::TD.CharacterScriptableObject
+  staringWeapon: {fileID: 990031223645932804, guid: d340eaec33a5f0a4abf7f5ddfb7efa42, type: 3}
+  maxHealth: 0
+  recovery: 0
+  walkAcceleration: 0
+  walkSpeed: 0
+  runAcceleration: 0
+  runSpeed: 0
+  sprintAcceleration: 0
+  sprintSpeed: 0
+  inAirAcceleration: 0
+  drag: 0
+  inAirDrag: 0
+  gravity: 0
+  jumpSpeed: 0
+  movingThreshold: 0
+  terminalVelocity: 0
+  might: 0
+  projectileSpeed: 0
+  magnet: 0

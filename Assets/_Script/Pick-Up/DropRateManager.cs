@@ -32,8 +32,19 @@ namespace TD
             if (possibleDrops.Count > 0)
             {
                 Drops drops = possibleDrops[UnityEngine.Random.Range(0, possibleDrops.Count)];
-                Instantiate(drops.itemPrefabs, transform.position, Quaternion.identity);
 
+                // Nâng vị trí Spawn lên một chút (ví dụ +0.5f) để tránh kẹt vào sàn nhà
+                Vector3 spawnPos = transform.position + Vector3.up * 0.5f;
+
+                GameObject spawnedItem = Instantiate(drops.itemPrefabs, spawnPos, Quaternion.identity);
+
+                // Lấy Rigidbody của item vừa tạo và triệt tiêu mọi lực văng
+                Rigidbody rb = spawnedItem.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.linearVelocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                }
             }
         }
 

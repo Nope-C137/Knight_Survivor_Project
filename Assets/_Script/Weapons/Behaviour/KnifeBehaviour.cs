@@ -8,15 +8,17 @@ namespace TD
         private Rigidbody rb;
 
         // Khởi tạo từ KnifeController
-        public void Initialize(Vector3 dir, float spd)
+        public void Initialize(Vector3 dir)
         {
             rb = GetComponent<Rigidbody>();
             timer = destroyAfterSeconds; // Reset lại thời gian sống mỗi khi lấy ra từ pool
 
+
+
             if (rb != null)
             {
                 rb.constraints = RigidbodyConstraints.FreezeRotation;
-                rb.linearVelocity = dir.normalized * spd;
+                rb.linearVelocity = dir.normalized * currentSpeed;
             }
         }
 

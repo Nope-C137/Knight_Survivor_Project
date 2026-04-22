@@ -35,7 +35,7 @@ namespace TD
             // Kiểm tra nếu va chạm với một đối tượng có tag "Enemy"
             if (collider.CompareTag("Enemy"))
             {
-                EnemyHealth enemy = collider.GetComponent<EnemyHealth>();
+                Enemy_Stats enemy = collider.GetComponent<Enemy_Stats>();
                 if (enemy != null)
                 {
                     enemy.TakeDamage(currentDamage); // Đảm bảo rằng TakeDamge được gọi đúng cách với currentDamage không phải weaponData.Damage

@@ -7,11 +7,11 @@ namespace TD
     public class Enemy_AI : MonoBehaviour
     {
         [SerializeField] private Transform player;
-        [SerializeField] private EnemyScriptableObject enemyData;
         [SerializeField] private float groundCheckDistance = 1.1f;
         [SerializeField] private float wallCheckDistance = 1f;
 
         private Rigidbody rb;
+        private Enemy_Stats enemyStats;
         //private EnemyAttackAnimation enemyAttackAnimation;
 
         // Cache
@@ -25,7 +25,7 @@ namespace TD
         protected virtual void Awake()
         {
             rb = GetComponent<Rigidbody>();
-            
+            enemyStats = GetComponent<Enemy_Stats>();
             //enemyAttackAnimation = GetComponent<EnemyAttackAnimation>();
 
             rb.freezeRotation = true;
@@ -59,7 +59,7 @@ namespace TD
             moveDirection = directionToPlayer.normalized;
 
             // Kiểm tra tường phía trước
-            bool wallAhead = Physics.Raycast(transform.position + Vector3.up * 0.5f, transform.forward, wallCheckDistance, enemyData.WallLayer);
+            bool wallAhead = Physics.Raycast(transform.position + Vector3.up * 0.5f, transform.forward, wallCheckDistance, enemyStats.currentWallLayer);
 
             if (wallAhead)
             {
@@ -77,7 +77,7 @@ namespace TD
             wasClimbing = wallAhead;
 
             // Kiểm tra tấn công
-            if (distanceToPlayer <= enemyData.AttackRange && !alreadyAttacked)
+            if (distanceToPlayer <= enemyStats.currentAttackRange && !alreadyAttacked)
             {
                 AttackPlayer();
             }
@@ -86,7 +86,7 @@ namespace TD
         protected virtual void HandleClimbing()
         {
             rb.useGravity = false;
-            rb.linearVelocity = Vector3.up * enemyData.ClimbSpeed;
+            rb.linearVelocity = Vector3.up * enemyStats.currentClimbSpeed;
 
             // Ngăn không cho enemy trôi ngang khi leo
             rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
@@ -100,22 +100,22 @@ namespace TD
             if (wasClimbing)
             {
                 Vector3 hopDirection = (transform.forward * 0.8f + Vector3.up).normalized;
-                rb.AddForce(hopDirection * enemyData.ClimbHopForce, ForceMode.VelocityChange);
+                rb.AddForce(hopDirection * enemyStats.currentClimbHopForce, ForceMode.VelocityChange);
             }
 
             // Di chuyển ngang
-            Vector3 horizontalVelocity = moveDirection * enemyData.MoveSpeed;
+            Vector3 horizontalVelocity = moveDirection * enemyStats.currentMoveSpeed;
             rb.linearVelocity = new Vector3(horizontalVelocity.x, rb.linearVelocity.y, horizontalVelocity.z);
 
             // Kiểm tra grounded và áp dụng gravity thủ công (mượt hơn mặc định)
             bool isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f,
                                             Vector3.down,
                                             groundCheckDistance,
-                                            enemyData.GroundLayer);
+                                            enemyStats.currentGroundLayer);
 
             if (!isGrounded)
             {
-                rb.AddForce(Vector3.down * enemyData.GravityForce, ForceMode.Acceleration);
+                rb.AddForce(Vector3.down * enemyStats.currentGravityForce, ForceMode.Acceleration);
             }
         }
 
@@ -128,7 +128,7 @@ namespace TD
             {
                 Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
                 rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation,
-                                               enemyData.RotationSpeed * Time.fixedDeltaTime));
+                                               enemyStats.currentRotationSpeed * Time.fixedDeltaTime));
             }
         }
 
@@ -149,7 +149,7 @@ namespace TD
             //    enemyAttackAnimation.PlayAttackAnimation();
             //}
 
-            Invoke(nameof(ResetAttack), enemyData.TimeBetweenAttacks);
+            Invoke(nameof(ResetAttack), enemyStats.currentTimeBetweenAttacks);
         }
 
         protected virtual void ResetAttack()
@@ -177,8 +177,14 @@ namespace TD
         // Gizmos hỗ trợ debug
         private void OnDrawGizmosSelected()
         {
+            if (enemyStats == null)
+            {
+                enemyStats = GetComponent<Enemy_Stats>();
+            }
+
+            if (enemyStats == null) return;
             // Ground check
-            Gizmos.color = Color.red;
+            Gizmos.color = Color.green;
             Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
 
             // Wall check (có offset lên một chút để chính xác hơn)
@@ -188,7 +194,7 @@ namespace TD
 
             // Attack range
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, enemyData.AttackRange);
+            Gizmos.DrawWireSphere(transform.position, enemyStats.currentAttackRange);
         }
     }
 }
